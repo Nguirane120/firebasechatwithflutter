@@ -1,3 +1,5 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebasechat/widgets/buttonwidget.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -15,7 +17,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: Duration(milliseconds: 2000),
     );
 
     animation = ColorTween(begin: Colors.blueAccent, end: Colors.white)
@@ -54,56 +56,36 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     height: 60.0,
                   ),
                 ),
-                Text(
-                  'Flash Chat',
-                  style: TextStyle(
-                      fontSize: 45.0,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black),
-                ),
+                AnimatedTextKit(repeatForever: true, animatedTexts: [
+                  TypewriterAnimatedText(
+                    speed: Duration(seconds: 2),
+                    'Flash Chat',
+                    textStyle: TextStyle(
+                        fontSize: 45.0,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.black),
+                  )
+                ]),
               ],
             ),
             SizedBox(
               height: 48.0,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                elevation: 5.0,
+            Buttonwidget(
+                text: "Login",
                 color: Colors.lightBlueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                child: MaterialButton(
-                  onPressed: () {
+                onpress: () {
+                  {
                     //Go to login screen.
                     Navigator.pushNamed(context, "/login");
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Log In',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Material(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(30.0),
-                elevation: 5.0,
-                child: MaterialButton(
-                  onPressed: () {
-                    //Go to registration screen.
-                    Navigator.pushNamed(context, '/register');
-                  },
-                  minWidth: 200.0,
-                  height: 42.0,
-                  child: Text(
-                    'Register',
-                  ),
-                ),
-              ),
-            ),
+                  }
+                }),
+            Buttonwidget(
+                text: "Register",
+                color: Colors.blueGrey,
+                onpress: () {
+                  Navigator.pushNamed(context, '/register');
+                })
           ],
         ),
       ),
