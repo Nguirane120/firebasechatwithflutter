@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebasechat/constant.dart';
@@ -14,15 +16,23 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCurrentUser();
   }
 
+  void logout() async {
+    try {
+      await auth.signOut();
+      print('Utilisateur déconnecté');
+      Navigator.pop(context);
+    } catch (e) {
+      print('Erreur lors de la déconnexion: $e');
+    }
+  }
+
   void getCurrentUser() async {
     try {
-      final User? user =
-          auth.currentUser; // Enlever le '!' pour vérifier si user est nul
+      final User? user = auth.currentUser;
 
       if (user != null) {
         loggedInUser = user.email;
@@ -39,11 +49,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         leading: null,
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
-              }),
+          IconButton(icon: Icon(Icons.close), onPressed: logout),
         ],
         title: Text('⚡️Chat'),
         backgroundColor: Colors.lightBlueAccent,
