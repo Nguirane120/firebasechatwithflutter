@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebasechat/widgets/buttonwidget.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -11,10 +14,31 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     with TickerProviderStateMixin {
   late AnimationController controller;
   late Animation animation;
+  bool isConnected = false;
+  StreamSubscription? internetSuscription;
 
   @override
   void initState() {
     super.initState();
+    internetSuscription = InternetConnection().onStatusChange.listen((event) {
+      print(event);
+      switch (event) {
+        case InternetStatus.connected:
+          setState(() {
+            isConnected = true;
+          });
+          break;
+        case InternetStatus.disconnected:
+          setState(() {
+            isConnected = false;
+          });
+          break;
+        default:
+          setState(() {
+            isConnected = false;
+          });
+      }
+    });
     controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1000),
@@ -26,13 +50,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
     controller.addListener(() {
       setState(() {});
-      // print(animation.value);
     });
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    internetSuscription?.cancel();
     controller.dispose();
     super.dispose();
   }
@@ -40,7 +63,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: animation.value,
+      backgroundColor: isConnected ? Colors.lightBlueAccent : Colors.red,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -73,7 +96,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             ),
             Buttonwidget(
                 text: "Login",
-                color: Colors.lightBlueAccent,
+                color: isConnected ? Colors.lightBlueAccent : Colors.red,
                 onpress: () {
                   {
                     //Go to login screen.
