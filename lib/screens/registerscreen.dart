@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebasechat/widgets/buttonwidget.dart';
 import 'package:firebasechat/widgets/inputwidget.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,10 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  String email = '';
+  String password = '';
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,28 +34,41 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             SizedBox(
               height: 48.0,
             ),
-            InputWidget(placeHolder: "Enter your email", onChange: (value) {}),
+            InputWidget(
+              placeHolder: "Enter your email",
+              onChange: (value) {
+                email = value;
+              },
+              keyBoard: TextInputType.emailAddress,
+            ),
             SizedBox(
               height: 8.0,
             ),
             InputWidget(
-                placeHolder: "Enter your password", onChange: (value) {}),
+                obscurPassword: true,
+                placeHolder: "Enter your password",
+                onChange: (value) {
+                  password = value;
+                }),
             SizedBox(
               height: 24.0,
             ),
             Buttonwidget(
                 text: "Register",
                 color: Colors.lightBlueAccent,
-                onpress: () {
-                  {
-                    //Go to login screen.
-                    Navigator.pushNamed(context, "/login");
+                onpress: () async {
+                  try {
+                    final user = await auth.createUserWithEmailAndPassword(
+                        email: email, password: password);
+                    if (user != null) {
+                      Navigator.pushNamed(context, '/chat');
+                    }
+                  } catch (e) {
+                    throw e.toString();
                   }
                 }),
             TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/');
-              },
+              onPressed: () {},
               child: Text(
                 "Welcome",
                 style: TextStyle(color: Colors.black),
