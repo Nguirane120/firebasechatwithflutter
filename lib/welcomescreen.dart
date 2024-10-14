@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebasechat/screens/chatscren.dart';
 import 'package:firebasechat/widgets/buttonwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -37,6 +39,17 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           setState(() {
             isConnected = false;
           });
+      }
+    });
+
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          return ChatScreen();
+        }));
+      } else {
+        Navigator.pushNamed(context, '/login');
       }
     });
     controller = AnimationController(
